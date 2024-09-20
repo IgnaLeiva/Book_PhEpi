@@ -42,11 +42,6 @@ ul.task-list li input[type="checkbox"] {
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
 <link href="site_libs/bootstrap/bootstrap-dark.min.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<meta name="shinylive:serviceworker_dir" content=".">
-<script src="site_libs/quarto-contrib/shinylive-0.5.0/shinylive/load-shinylive-sw.js" type="module"></script>
-<script src="site_libs/quarto-contrib/shinylive-0.5.0/shinylive/run-python-blocks.js" type="module"></script>
-<link href="site_libs/quarto-contrib/shinylive-0.5.0/shinylive/shinylive.css" rel="stylesheet">
-<link href="site_libs/quarto-contrib/shinylive-quarto-css/shinylive-quarto.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -190,8 +185,16 @@ ul.task-list li input[type="checkbox"] {
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#define-ui-for-the-application" id="toc-define-ui-for-the-application" class="nav-link active" data-scroll-target="#define-ui-for-the-application"><span class="header-section-number">5</span> Define UI for the application</a></li>
+  <li><a href="#define-server-logic" id="toc-define-server-logic" class="nav-link" data-scroll-target="#define-server-logic"><span class="header-section-number">6</span> Define server logic</a></li>
+  <li><a href="#run-the-application" id="toc-run-the-application" class="nav-link" data-scroll-target="#run-the-application"><span class="header-section-number">7</span> Run the application</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/b-rodrigues/quarto_book_nix/edit/main/shiny.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -215,88 +218,76 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<pre class="shinylive-r" data-engine="r"><code>#| standalone: true
-#| viewerHeight: 800
-
-library(shiny)
-
-# Define UI for the application
-ui &lt;- fluidPage(
-  titlePanel(""),
+<p>#```{shinylive-r} #| standalone: true #| viewerHeight: 800 library(shinylive) library(shiny)</p>
+<section id="define-ui-for-the-application" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Define UI for the application</h1>
+<p>ui &lt;- fluidPage( titlePanel(““),</p>
+<p>sidebarLayout( sidebarPanel( # Dropdown to select OR or RR selectInput(“measure”, “Select Measure:”, choices = list(“Odds Ratio (OR)” = “OR”, “Risk Ratio (RR)” = “RR”)),</p>
+<pre><code>  # Input fields for A, B, C, and D
+  numericInput("A_input", "A: Exposed cases", value = 20),
+  numericInput("B_input", "B: Exposed non-cases", value = 80),
+  numericInput("C_input", "C: Unexposed cases", value = 15),
+  numericInput("D_input", "D: Unexposed non-cases", value = 85),
   
-  sidebarLayout(
-    sidebarPanel(
-      # Dropdown to select OR or RR
-      selectInput("measure", "Select Measure:", 
-                  choices = list("Odds Ratio (OR)" = "OR", "Risk Ratio (RR)" = "RR")),
-      
-      # Input fields for A, B, C, and D
-      numericInput("A_input", "A: Exposed cases", value = 20),
-      numericInput("B_input", "B: Exposed non-cases", value = 80),
-      numericInput("C_input", "C: Unexposed cases", value = 15),
-      numericInput("D_input", "D: Unexposed non-cases", value = 85),
-      
-      # Dropdown to select CI level or enter custom
-      numericInput("CI_level", "Confidence Level (%):", value = 95, min = 50, max = 99)
-    ),
-    
-    mainPanel(
-      # Output text for the selected measure and custom CI
-      textOutput("result")
-    )
-  )
-)
+  # Dropdown to select CI level or enter custom
+  numericInput("CI_level", "Confidence Level (%):", value = 95, min = 50, max = 99)
+),
 
-# Define server logic
-server &lt;- function(input, output) {
+mainPanel(
+  # Output text for the selected measure and custom CI
+  textOutput("result")
+)</code></pre>
+<p>) )</p>
+</section>
+<section id="define-server-logic" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> Define server logic</h1>
+<p>server &lt;- function(input, output) {</p>
+<p># Reactive expression to calculate OR or RR and custom CI output$result &lt;- renderText({</p>
+<pre><code># Assign values from user inputs
+A &lt;- input$A_input
+B &lt;- input$B_input
+C &lt;- input$C_input
+D &lt;- input$D_input
+CI_level &lt;- input$CI_level / 100  # Convert CI level to decimal
+
+# Calculate z-value based on CI level
+z_value &lt;- qnorm(1 - (1 - CI_level) / 2)
+
+# Check whether to calculate OR or RR based on user input
+if (input$measure == "OR") {
+  # Calculate Odds Ratio (OR)
+  OR &lt;- (A * D) / (B * C)
   
-  # Reactive expression to calculate OR or RR and custom CI
-  output$result &lt;- renderText({
-    
-    # Assign values from user inputs
-    A &lt;- input$A_input
-    B &lt;- input$B_input
-    C &lt;- input$C_input
-    D &lt;- input$D_input
-    CI_level &lt;- input$CI_level / 100  # Convert CI level to decimal
-    
-    # Calculate z-value based on CI level
-    z_value &lt;- qnorm(1 - (1 - CI_level) / 2)
-    
-    # Check whether to calculate OR or RR based on user input
-    if (input$measure == "OR") {
-      # Calculate Odds Ratio (OR)
-      OR &lt;- (A * D) / (B * C)
-      
-      # Calculate custom CI for OR
-      lower_CI &lt;- exp(log(OR) - z_value * sqrt(1/A + 1/B + 1/C + 1/D))
-      upper_CI &lt;- exp(log(OR) + z_value * sqrt(1/A + 1/B + 1/C + 1/D))
-      
-      # Display OR result
-      paste0("Odds Ratio (OR): ", round(OR, 2), 
-             ", ", round(input$CI_level, 0), "% CI: ", round(lower_CI, 2), " - ", round(upper_CI, 2))
-      
-    } else {
-      # Calculate Risk Ratio (RR)
-      risk_exposed &lt;- A / (A + B)
-      risk_unexposed &lt;- C / (C + D)
-      RR &lt;- risk_exposed / risk_unexposed
-      
-      # Calculate custom CI for RR
-      lower_CI &lt;- exp(log(RR) - z_value * sqrt((1/A) - (1/(A+B)) + (1/C) - (1/(C+D))))
-      upper_CI &lt;- exp(log(RR) + z_value * sqrt((1/A) - (1/(A+B)) + (1/C) - (1/(C+D))))
-      
-      # Display RR result
-      paste0("Risk Ratio (RR): ", round(RR, 2), 
-             ", ", round(input$CI_level, 0), "% CI: ", round(lower_CI, 2), " - ", round(upper_CI, 2))
-    }
-  })
-}
-
-# Run the application 
-shinyApp(ui = ui, server = server)</code></pre>
+  # Calculate custom CI for OR
+  lower_CI &lt;- exp(log(OR) - z_value * sqrt(1/A + 1/B + 1/C + 1/D))
+  upper_CI &lt;- exp(log(OR) + z_value * sqrt(1/A + 1/B + 1/C + 1/D))
+  
+  # Display OR result
+  paste0("Odds Ratio (OR): ", round(OR, 2), 
+         ", ", round(input$CI_level, 0), "% CI: ", round(lower_CI, 2), " - ", round(upper_CI, 2))
+  
+} else {
+  # Calculate Risk Ratio (RR)
+  risk_exposed &lt;- A / (A + B)
+  risk_unexposed &lt;- C / (C + D)
+  RR &lt;- risk_exposed / risk_unexposed
+  
+  # Calculate custom CI for RR
+  lower_CI &lt;- exp(log(RR) - z_value * sqrt((1/A) - (1/(A+B)) + (1/C) - (1/(C+D))))
+  upper_CI &lt;- exp(log(RR) + z_value * sqrt((1/A) - (1/(A+B)) + (1/C) - (1/(C+D))))
+  
+  # Display RR result
+  paste0("Risk Ratio (RR): ", round(RR, 2), 
+         ", ", round(input$CI_level, 0), "% CI: ", round(lower_CI, 2), " - ", round(upper_CI, 2))
+}</code></pre>
+<p>}) }</p>
+</section>
+<section id="run-the-application" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> Run the application</h1>
+<p>shinyApp(ui = ui, server = server) #```</p>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -877,4 +868,4 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions"><ul><li><a href="https://github.com/b-rodrigues/quarto_book_nix/edit/main/shiny.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></div></div></footer></body></html>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/b-rodrigues/quarto_book_nix/edit/main/shiny.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></div></div></footer></body></html>

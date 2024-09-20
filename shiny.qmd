@@ -9,7 +9,7 @@ filters:
 #| eval: false
 #| standalone: true
 #| viewerHeight: 400
-
+library(shinylive)
 library(shiny)
 
 # Define UI for the application
@@ -95,10 +95,10 @@ shinyApp(ui = ui, server = server)
 
 ```
 
-```{shinylive-r}
+#```{shinylive-r}
 #| standalone: true
 #| viewerHeight: 800
-
+library(shinylive)
 library(shiny)
 
 # Define UI for the application
@@ -176,4 +176,4 @@ server <- function(input, output) {
 
 # Run the application 
 shinyApp(ui = ui, server = server)
-```
+#```
