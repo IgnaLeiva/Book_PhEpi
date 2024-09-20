@@ -95,7 +95,7 @@ shinyApp(ui = ui, server = server)
 
 ```
 
-#```{shinylive-r}
+```{shinylive-r}
 #| standalone: true
 #| viewerHeight: 800
 library(shinylive)
@@ -176,4 +176,4 @@ server <- function(input, output) {
 
 # Run the application 
 shinyApp(ui = ui, server = server)
-#```
+```
