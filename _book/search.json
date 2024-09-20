@@ -1,0 +1,112 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Pharmacoepidemiology course",
+    "section": "",
+    "text": "Welcome to pharmacoepidemiology\nThese notes provide the core material for the pharmacoepidemiology (PhEpi) course for pharmacist.\nThe curse provides an introduction to the key PhEpi concepts and methods. Topics covered include study design, sources of bias and study evaluation. It also make the diference between description, prediction and causal inference. These topics provide the framework needed for evaluating the existing literature. The module places a focus on learning through practical examples and incorporates directed learning, lectures, group discussion, and a final journal club.\nThis course aims are to introduce:\nCourse content\n1  Measures in Epidemiology",
+    "crumbs": [
+      "Welcome to pharmacoepidemiology"
+    ]
+  },
+  {
+    "objectID": "index.html#this-book-template-gets-built-on-github-actions-at-each-push",
+    "href": "index.html#this-book-template-gets-built-on-github-actions-at-each-push",
+    "title": "A fully reproducible Quarto book template",
+    "section": "This book template gets built on Github Actions at each push",
+    "text": "This book template gets built on Github Actions at each push\nThis Quarto book template gets automatically built on Github Actions each time you push changes. To ensure reproducibility, the Nix package manager gets used to install all the dependencies you need:\n\nAn R version;\nA library of R packages;\nQuarto;\nTeXLive packages;\nany other system-level dependency that is required.\n\nBecause a specific nixpkgs revision gets used, exactly the same pieces of software get always installed. So you don’t need to pin a specific version of R, nor use {renv}, nor make sure to use a fixed version of a runner (typically ubuntu-22.04) to ensure reproducibility of your book. The next chapter explain how Nix works in more detail and why it’s enough to use it to ensure reproducibility.\nEach time a commit gets pushed, a website gets built, an Epub for E-ink readers (such as the Kindle or the Kobo) and a PDF get built. The PDF is also in the right format and ready for self-publishing on Amazon Kindle Direct Publishing.",
+    "crumbs": [
+      "Welcome to pharmacoepidemiology"
+    ]
+  },
+  {
+    "objectID": "nix_nixpkgs.html",
+    "href": "nix_nixpkgs.html",
+    "title": "1  Measures in Epidemiology",
+    "section": "",
+    "text": "1.1 Measures of frequency\nThese tools are essential for describing and comparing populations, tracking changes over time, and identifying potential associations between exposures and health outcomes. Commonly referred to as Measures of Morbidity, they provide crucial insights into the burden of disease in a population and help guide public health decisions by quantifying how often health events, such as illnesses or conditions, occur.",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Measures in Epidemiology</span>"
+    ]
+  },
+  {
+    "objectID": "nix_nixpkgs.html#ensuring-reproducibility-with-nix",
+    "href": "nix_nixpkgs.html#ensuring-reproducibility-with-nix",
+    "title": "1  Measures in Epidemiology",
+    "section": "1.2 Ensuring reproducibility with Nix",
+    "text": "1.2 Ensuring reproducibility with Nix\nThe nixpkgs mono-repository is “just” a Github repsitory which you can find here: https://github.com/NixOS/nixpkgs. This repository contains Nix expressions to build and install more than 80’000 packages and you can search for installable Nix packages here.\nBecause nixpkgs is a Github repository, it is possible to use a specific commit hash to install the packages as they were at a specific point in time. For example, if you use this commit, 7c9cc5a6e, you’ll get the very latest packages as of the 19th of October 2023, but if you used this one instead: 976fa3369, you’ll get packages from the 19th of August 2023.\nYou can declare which revision of nixpkgs to use at the top of a default.nix file. Here is what such a file looks like:\nlet\n pkgs = import (fetchTarball \"https://github.com/NixOS/nixpkgs/archive/976fa3369d722e76f37c77493d99829540d43845.tar.gz\") {};\n rpkgs = builtins.attrValues {\n  inherit (pkgs.rPackages) tidymodels vetiver targets xgboost;\n};\n system_packages = builtins.attrValues {\n  inherit (pkgs) R;\n};\nin\n pkgs.mkShell {\n  buildInputs = [  rpkgs system_packages  ];\n }\nAs you can see, we import a specific revision of the nixpkgs Github repository to ensure that we always get the same packages in our environment.\nIf you’re unfamiliar with Nix, this file can be quite scary. But don’t worry, with my co-author Philipp Baumann we developed an R package called {rix} which generate this default.nix files for you.",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Measures in Epidemiology</span>"
+    ]
+  },
+  {
+    "objectID": "nix_nixpkgs.html#the-r-rix-package",
+    "href": "nix_nixpkgs.html#the-r-rix-package",
+    "title": "1  Measures in Epidemiology",
+    "section": "1.3 The R {rix} package",
+    "text": "1.3 The R {rix} package\n{rix} is an R package that makes it very easy to generate very complex default.nix files. These files can in turn be used by the Nix package manager to build project-specific environments. The book’s Github repository contains a file called define_env.R with the following content:\n\nlibrary(rix)\n\nrix(r_ver = \"4.3.1\",\n    r_pkgs = c(\"quarto\"),\n    system_pkgs = \"quarto\",\n    tex_pkgs = c(\n      \"amsmath\",\n      \"framed\",\n      \"fvextra\",\n      \"environ\",\n      \"fontawesome5\",\n      \"orcidlink\",\n      \"pdfcol\",\n      \"tcolorbox\",\n      \"tikzfill\"\n    ),\n    ide = \"other\",\n    shell_hook = \"\",\n    project_path = \".\",\n    overwrite = TRUE,\n    print = TRUE)\n\n{rix} ships the rix() function which takes several arguments. These arguments allow you to specify an R version, a list of R packages, a list of system packages, TeXLive packages and other options that allow you to specify your requirements. Running this code generates this default.nix file:\n# This file was generated by the {rix} R package v0.4.1 on 2023-10-19\n# with following call:\n# &gt;rix(r_ver = \"976fa3369d722e76f37c77493d99829540d43845\",\n#  &gt; r_pkgs = c(\"quarto\"),\n#  &gt; system_pkgs = \"quarto\",\n#  &gt; tex_pkgs = c(\"amsmath\",\n#  &gt; \"framed\",\n#  &gt; \"fvextra\",\n#  &gt; \"environ\",\n#  &gt; \"fontawesome5\",\n#  &gt; \"orcidlink\",\n#  &gt; \"pdfcol\",\n#  &gt; \"tcolorbox\",\n#  &gt; \"tikzfill\"),\n#  &gt; ide = \"other\",\n#  &gt; project_path = \".\",\n#  &gt; overwrite = TRUE,\n#  &gt; print = TRUE,\n#  &gt; shell_hook = \"\")\n# It uses nixpkgs' revision 976fa3369d722e76f37c77493d99829540d43845 for reproducibility purposes\n# which will install R version 4.3.1\n# Report any issues to https://github.com/b-rodrigues/rix\nlet\n pkgs = import (fetchTarball \"https://github.com/NixOS/nixpkgs/archive/976fa3369d722e76f37c77493d99829540d43845.tar.gz\") {};\n rpkgs = builtins.attrValues {\n  inherit (pkgs.rPackages) quarto;\n};\n  tex = (pkgs.texlive.combine {\n  inherit (pkgs.texlive) scheme-small amsmath framed fvextra environ fontawesome5 orcidlink pdfcol tcolorbox tikzfill;\n});\n system_packages = builtins.attrValues {\n  inherit (pkgs) R glibcLocalesUtf8 quarto;\n};\n  in\n  pkgs.mkShell {\n    LOCALE_ARCHIVE = if pkgs.system == \"x86_64-linux\" then  \"${pkgs.glibcLocalesUtf8}/lib/locale/locale-archive\" else \"\";\n    LANG = \"en_US.UTF-8\";\n    LC_ALL = \"en_US.UTF-8\";\n    LC_TIME = \"en_US.UTF-8\";\n    LC_MONETARY = \"en_US.UTF-8\";\n    LC_PAPER = \"en_US.UTF-8\";\n    LC_MEASUREMENT = \"en_US.UTF-8\";\n\n    buildInputs = [  rpkgs tex system_packages  ];\n  }\nYou can now use this file to work on your book locally by first building the environment and then use it. To know more about using default.nix files on a day-to-day basis, read this vignette.\nIn the next chapter, I’m going to explain how this book gets built on Github Actions.",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Measures in Epidemiology</span>"
+    ]
+  },
+  {
+    "objectID": "conclusion.html",
+    "href": "conclusion.html",
+    "title": "3  Conclusion",
+    "section": "",
+    "text": "So in conclusion, should you use this template? I think you should, even if you’re not that familiar with Nix. If you need to add packages, simply rerun define_env.R after having added the packages you need. This will generate a new default.nix file that will generate the right environment once you push this change. The advantage of using Nix is that it will always work: the workflow file uses ubuntu-latest, so the underlying operating system changes with time, but because you’re using a fixed revision of Nix, the same versions of R and packages will get used, forever.\nIf you need more recent packages or a more recent version of R, simply use a more recent nixpkgs revision. If, despite all these advantages, you prefer using {renv}, you could check out my other Github template. This template does exactly the same thing: it builds a website for your book, an Epub for E-ink readers and a PDF, ready for Amazon’s self-publishing service. The difference is that the right version of R, TeXLive and Quarto get installed using dedicated actions, and the R packages get installed using {renv}. The underlying operating system is ubuntu-22.04 instead of ubuntu-latest. This is to ensure that the underlying system dependencies stay stable, but it also means that you will need to update this operating system once version 22.04 of Ubuntu is deprecated (in 2027) which could cause the R version and packages that you need not to be installable anymore. This is a lot of moving pieces, and if one of them fails, nothing will work anymore. You also notice this if you pay attention at the number of lines of code of the workflow files of both repositories: if you compare the Github workflow file from the template that uses actions to install the right software and {renv} to the one from this template you’ll notice that the one from this template is much shorter as well.\nThe only dependency is Nix itself, and Nix is not going anywhere, as it’s been around for 20 years. The Determinate System actions are optional; so even if for some reason those fail in the future, they’re not needed. It’s just that using them makes things easier.\nIf you use this template, or have any questions, please let me know by opening an issue.",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Conclusion</span>"
+    ]
+  },
+  {
+    "objectID": "nix_actions.html",
+    "href": "nix_actions.html",
+    "title": "2  Building on Github Actions with Nix",
+    "section": "",
+    "text": "2.1 Setup\nJust like when building using the usual approches, you first need to build the book locally, on your computer, once. For this, after having generated the default.nix file, you can build the environment using nix-build, and then drop in a shell with nix-shell (if this previous sentence is confusing, make sure you read the vignette linked at the end of the previous chapter).\nOnce in that shell, run quarto publish gh-pages. This will render the book, and make sure that everything gets setup properly. If the book does not render, this could mean that you’re missing some dependency. Make sure to specify all the requirements in the define_env.R script and that you re-generated the default.nix file. If the quarto publish gh-pages command succeeds, you’re all set. Editing the book and pushing will build the book on Github Actions.",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Building on Github Actions with Nix</span>"
+    ]
+  },
+  {
+    "objectID": "nix_actions.html#the-github-actions-workflow-file",
+    "href": "nix_actions.html#the-github-actions-workflow-file",
+    "title": "2  Building on Github Actions with Nix",
+    "section": "2.2 The Github Actions workflow file",
+    "text": "2.2 The Github Actions workflow file\nHere is what the workflow file looks like:\nname: Build book using Nix\n\non:\n  push:\n    branches:\n      - main\n      - master\n\njobs:\n  build:\n    runs-on: ubuntu-latest\n\n    steps:\n    - name: Checkout Code\n      uses: actions/checkout@v3\n\n    - name: Install Nix\n      uses: DeterminateSystems/nix-installer-action@main\n      with:\n        logger: pretty\n        log-directives: nix_installer=trace\n        backtrace: full\n\n    - name: Nix cache\n      uses: DeterminateSystems/magic-nix-cache-action@main\n\n    - name: Build development environment\n      run: |\n        nix-build\n\n    - name: Publish to GitHub Pages (and render)\n      uses: b-rodrigues/quarto-nix-actions/publish@main\n      env:\n        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} \n\nThe first step Checkout code makes the code available to the rest of the steps. I then install Nix on this runner using the Determinate Systems nix-installer-action and then I use another action from Determinate Systems, the magic-nix-cache-action. This action caches all the packages so that they don’t need to get re-built each time a change gets pushed, speeding up the process by a lot. The development environment gets then built using nix-build.\nFinally, an action I defined runs, quarto-nix-actions/publish. This is a fork of the quarto-actions/publish action which you can find here. My fork simply makes sure that the quarto render and quarto publish commands run in the Nix environment defined for the project.",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Building on Github Actions with Nix</span>"
+    ]
+  },
+  {
+    "objectID": "index.html#welcome-to-pharmacoepidemiology",
+    "href": "index.html#welcome-to-pharmacoepidemiology",
+    "title": "Pharmacoepidemiology course",
+    "section": "",
+    "text": "the motivation and critical thinking towards solving a question in PhEpi studies through interrogation of data and drawing conclusions from evidence;\nthe principles of probability, regression modelling and statistical inference within frequentist and Bayesian frameworks.",
+    "crumbs": [
+      "Welcome to pharmacoepidemiology"
+    ]
+  },
+  {
+    "objectID": "nix_nixpkgs.html#measures-of-frequency",
+    "href": "nix_nixpkgs.html#measures-of-frequency",
+    "title": "1  Measures in Epidemiology",
+    "section": "",
+    "text": "1.1.1 Prevalence\ndddd\n\n\n1.1.2 Incidence\nThe question that remains unanswered though, is why use the Nix package manager to install all this software instead of using the usual ways of first installing R, and then using install.packages() to install any required packages?\n\\(\\text{Incidence rate per 1,000} =\\)\n\\(\\frac{\n\\begin{aligned}\n    \\text{Number of new cases of a disease} \\\\\n    \\text{occurring in a population during a} \\\\\n    \\text{specified period of time}\n\\end{aligned}\n}{\n\\begin{aligned}\n    \\text{Total person-time (sum of the} \\\\\n    \\text{time periods of observation of each} \\\\\n    \\text{person who has been observed for all or} \\\\\n    \\text{part of the entire time period)}\n\\end{aligned}\n} \\times 1,000\\)\nKey Differences Between Cumulative Incidence and Incidence Rate\n\n\n\n\n\n\n\n\nAspect\nCumulative Incidence\nIncidence Rate\n\n\n\n\nMeasure\nProportion or risk\nRate\n\n\nFormula\n()\n()\n\n\nUnit\nNo units (proportion)\nUnits of time (e.g., per person-year)\n\n\nAssumptions\nAssumes all individuals are followed for the same period\nAccounts for varying follow-up times\n\n\nInterpretation\nProbability of developing disease over a period\nSpeed at which new cases occur\n\n\nBest for\nShort-term studies with stable populations\nLong-term studies with varying follow-up times\n\n\nPopulation at risk\nEntire population at the start of the period\nVaries as it accounts for person-time",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Measures in Epidemiology</span>"
+    ]
+  },
+  {
+    "objectID": "shiny.html",
+    "href": "shiny.html",
+    "title": "4  Odds Ratio and Risk Ratio Calculator",
+    "section": "",
+    "text": "#| standalone: true\n#| viewerHeight: 800\n\nlibrary(shiny)\n\n# Define UI for the application\nui &lt;- fluidPage(\n  titlePanel(\"\"),\n  \n  sidebarLayout(\n    sidebarPanel(\n      # Dropdown to select OR or RR\n      selectInput(\"measure\", \"Select Measure:\", \n                  choices = list(\"Odds Ratio (OR)\" = \"OR\", \"Risk Ratio (RR)\" = \"RR\")),\n      \n      # Input fields for A, B, C, and D\n      numericInput(\"A_input\", \"A: Exposed cases\", value = 20),\n      numericInput(\"B_input\", \"B: Exposed non-cases\", value = 80),\n      numericInput(\"C_input\", \"C: Unexposed cases\", value = 15),\n      numericInput(\"D_input\", \"D: Unexposed non-cases\", value = 85),\n      \n      # Dropdown to select CI level or enter custom\n      numericInput(\"CI_level\", \"Confidence Level (%):\", value = 95, min = 50, max = 99)\n    ),\n    \n    mainPanel(\n      # Output text for the selected measure and custom CI\n      textOutput(\"result\")\n    )\n  )\n)\n\n# Define server logic\nserver &lt;- function(input, output) {\n  \n  # Reactive expression to calculate OR or RR and custom CI\n  output$result &lt;- renderText({\n    \n    # Assign values from user inputs\n    A &lt;- input$A_input\n    B &lt;- input$B_input\n    C &lt;- input$C_input\n    D &lt;- input$D_input\n    CI_level &lt;- input$CI_level / 100  # Convert CI level to decimal\n    \n    # Calculate z-value based on CI level\n    z_value &lt;- qnorm(1 - (1 - CI_level) / 2)\n    \n    # Check whether to calculate OR or RR based on user input\n    if (input$measure == \"OR\") {\n      # Calculate Odds Ratio (OR)\n      OR &lt;- (A * D) / (B * C)\n      \n      # Calculate custom CI for OR\n      lower_CI &lt;- exp(log(OR) - z_value * sqrt(1/A + 1/B + 1/C + 1/D))\n      upper_CI &lt;- exp(log(OR) + z_value * sqrt(1/A + 1/B + 1/C + 1/D))\n      \n      # Display OR result\n      paste0(\"Odds Ratio (OR): \", round(OR, 2), \n             \", \", round(input$CI_level, 0), \"% CI: \", round(lower_CI, 2), \" - \", round(upper_CI, 2))\n      \n    } else {\n      # Calculate Risk Ratio (RR)\n      risk_exposed &lt;- A / (A + B)\n      risk_unexposed &lt;- C / (C + D)\n      RR &lt;- risk_exposed / risk_unexposed\n      \n      # Calculate custom CI for RR\n      lower_CI &lt;- exp(log(RR) - z_value * sqrt((1/A) - (1/(A+B)) + (1/C) - (1/(C+D))))\n      upper_CI &lt;- exp(log(RR) + z_value * sqrt((1/A) - (1/(A+B)) + (1/C) - (1/(C+D))))\n      \n      # Display RR result\n      paste0(\"Risk Ratio (RR): \", round(RR, 2), \n             \", \", round(input$CI_level, 0), \"% CI: \", round(lower_CI, 2), \" - \", round(upper_CI, 2))\n    }\n  })\n}\n\n# Run the application \nshinyApp(ui = ui, server = server)",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Odds Ratio and Risk Ratio Calculator</span>"
+    ]
+  }
+]

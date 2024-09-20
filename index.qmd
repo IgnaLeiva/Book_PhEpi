@@ -1,0 +1,19 @@
+## Welcome to pharmacoepidemiology {.unnumbered}
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(tidy.opts = list(width.cutoff = 60), tidy = TRUE)
+```
+
+These notes provide the core material for the pharmacoepidemiology (PhEpi) course for pharmacist.
+
+The curse provides an introduction to the key PhEpi concepts and methods. Topics covered include study design, sources of bias and study evaluation. It also make the diference between description, prediction and causal inference. These topics provide the framework needed for evaluating the existing literature. The module places a focus on learning through practical examples and incorporates directed learning, lectures, group discussion, and a final journal club.
+
+This course aims are to introduce:
+
+- the motivation and critical thinking towards solving a question in PhEpi studies through interrogation of data and drawing conclusions from evidence;
+- the principles of probability, regression modelling and statistical inference within frequentist and Bayesian frameworks.
+
+
+**Course content**
+
+@sec-measure-in-epi
