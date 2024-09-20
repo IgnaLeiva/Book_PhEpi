@@ -4,6 +4,8 @@ You have to clone the repository, create a file name_of_the_topic.qmd and let me
 
 It may seem like a lot of work, but for future lectures this will make things easier.
 
+
+
 Best, Ignacio
 
 
