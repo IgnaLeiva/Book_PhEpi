@@ -10,11 +10,11 @@
     ]
   },
   {
-    "objectID": "index.html#this-book-template-gets-built-on-github-actions-at-each-push",
-    "href": "index.html#this-book-template-gets-built-on-github-actions-at-each-push",
-    "title": "A fully reproducible Quarto book template",
-    "section": "This book template gets built on Github Actions at each push",
-    "text": "This book template gets built on Github Actions at each push\nThis Quarto book template gets automatically built on Github Actions each time you push changes. To ensure reproducibility, the Nix package manager gets used to install all the dependencies you need:\n\nAn R version;\nA library of R packages;\nQuarto;\nTeXLive packages;\nany other system-level dependency that is required.\n\nBecause a specific nixpkgs revision gets used, exactly the same pieces of software get always installed. So you don’t need to pin a specific version of R, nor use {renv}, nor make sure to use a fixed version of a runner (typically ubuntu-22.04) to ensure reproducibility of your book. The next chapter explain how Nix works in more detail and why it’s enough to use it to ensure reproducibility.\nEach time a commit gets pushed, a website gets built, an Epub for E-ink readers (such as the Kindle or the Kobo) and a PDF get built. The PDF is also in the right format and ready for self-publishing on Amazon Kindle Direct Publishing.",
+    "objectID": "index.html#welcome-to-pharmacoepidemiology",
+    "href": "index.html#welcome-to-pharmacoepidemiology",
+    "title": "Pharmacoepidemiology course",
+    "section": "",
+    "text": "the motivation and critical thinking towards solving a question in PhEpi studies through interrogation of data and drawing conclusions from evidence;\nthe principles of probability, regression modelling and statistical inference within frequentist and Bayesian frameworks.",
     "crumbs": [
       "Welcome to pharmacoepidemiology"
     ]
@@ -25,6 +25,16 @@
     "title": "1  Measures in Epidemiology",
     "section": "",
     "text": "1.1 Measures of frequency\nThese tools are essential for describing and comparing populations, tracking changes over time, and identifying potential associations between exposures and health outcomes. Commonly referred to as Measures of Morbidity, they provide crucial insights into the burden of disease in a population and help guide public health decisions by quantifying how often health events, such as illnesses or conditions, occur.",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Measures in Epidemiology</span>"
+    ]
+  },
+  {
+    "objectID": "nix_nixpkgs.html#measures-of-frequency",
+    "href": "nix_nixpkgs.html#measures-of-frequency",
+    "title": "1  Measures in Epidemiology",
+    "section": "",
+    "text": "1.1.1 Prevalence\ndddd\n\n\n1.1.2 Incidence\nThe question that remains unanswered though, is why use the Nix package manager to install all this software instead of using the usual ways of first installing R, and then using install.packages() to install any required packages?\n\\(\\text{Incidence rate per 1,000} =\\)\n\\(\\frac{\n\\begin{aligned}\n    \\text{Number of new cases of a disease} \\\\\n    \\text{occurring in a population during a} \\\\\n    \\text{specified period of time}\n\\end{aligned}\n}{\n\\begin{aligned}\n    \\text{Total person-time (sum of the} \\\\\n    \\text{time periods of observation of each} \\\\\n    \\text{person who has been observed for all or} \\\\\n    \\text{part of the entire time period)}\n\\end{aligned}\n} \\times 1,000\\)\nKey Differences Between Cumulative Incidence and Incidence Rate\n\n\n\n\n\n\n\n\nAspect\nCumulative Incidence\nIncidence Rate\n\n\n\n\nMeasure\nProportion or risk\nRate\n\n\nFormula\n()\n()\n\n\nUnit\nNo units (proportion)\nUnits of time (e.g., per person-year)\n\n\nAssumptions\nAssumes all individuals are followed for the same period\nAccounts for varying follow-up times\n\n\nInterpretation\nProbability of developing disease over a period\nSpeed at which new cases occur\n\n\nBest for\nShort-term studies with stable populations\nLong-term studies with varying follow-up times\n\n\nPopulation at risk\nEntire population at the start of the period\nVaries as it accounts for person-time",
     "crumbs": [
       "<span class='chapter-number'>1</span>  <span class='chapter-title'>Measures in Epidemiology</span>"
     ]
@@ -50,16 +60,6 @@
     ]
   },
   {
-    "objectID": "conclusion.html",
-    "href": "conclusion.html",
-    "title": "3  Conclusion",
-    "section": "",
-    "text": "So in conclusion, should you use this template? I think you should, even if you’re not that familiar with Nix. If you need to add packages, simply rerun define_env.R after having added the packages you need. This will generate a new default.nix file that will generate the right environment once you push this change. The advantage of using Nix is that it will always work: the workflow file uses ubuntu-latest, so the underlying operating system changes with time, but because you’re using a fixed revision of Nix, the same versions of R and packages will get used, forever.\nIf you need more recent packages or a more recent version of R, simply use a more recent nixpkgs revision. If, despite all these advantages, you prefer using {renv}, you could check out my other Github template. This template does exactly the same thing: it builds a website for your book, an Epub for E-ink readers and a PDF, ready for Amazon’s self-publishing service. The difference is that the right version of R, TeXLive and Quarto get installed using dedicated actions, and the R packages get installed using {renv}. The underlying operating system is ubuntu-22.04 instead of ubuntu-latest. This is to ensure that the underlying system dependencies stay stable, but it also means that you will need to update this operating system once version 22.04 of Ubuntu is deprecated (in 2027) which could cause the R version and packages that you need not to be installable anymore. This is a lot of moving pieces, and if one of them fails, nothing will work anymore. You also notice this if you pay attention at the number of lines of code of the workflow files of both repositories: if you compare the Github workflow file from the template that uses actions to install the right software and {renv} to the one from this template you’ll notice that the one from this template is much shorter as well.\nThe only dependency is Nix itself, and Nix is not going anywhere, as it’s been around for 20 years. The Determinate System actions are optional; so even if for some reason those fail in the future, they’re not needed. It’s just that using them makes things easier.\nIf you use this template, or have any questions, please let me know by opening an issue.",
-    "crumbs": [
-      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Conclusion</span>"
-    ]
-  },
-  {
     "objectID": "nix_actions.html",
     "href": "nix_actions.html",
     "title": "2  Building on Github Actions with Nix",
@@ -80,23 +80,13 @@
     ]
   },
   {
-    "objectID": "index.html#welcome-to-pharmacoepidemiology",
-    "href": "index.html#welcome-to-pharmacoepidemiology",
-    "title": "Pharmacoepidemiology course",
+    "objectID": "conclusion.html",
+    "href": "conclusion.html",
+    "title": "3  Conclusion",
     "section": "",
-    "text": "the motivation and critical thinking towards solving a question in PhEpi studies through interrogation of data and drawing conclusions from evidence;\nthe principles of probability, regression modelling and statistical inference within frequentist and Bayesian frameworks.",
+    "text": "So in conclusion, should you use this template? I think you should, even if you’re not that familiar with Nix. If you need to add packages, simply rerun define_env.R after having added the packages you need. This will generate a new default.nix file that will generate the right environment once you push this change. The advantage of using Nix is that it will always work: the workflow file uses ubuntu-latest, so the underlying operating system changes with time, but because you’re using a fixed revision of Nix, the same versions of R and packages will get used, forever.\nIf you need more recent packages or a more recent version of R, simply use a more recent nixpkgs revision. If, despite all these advantages, you prefer using {renv}, you could check out my other Github template. This template does exactly the same thing: it builds a website for your book, an Epub for E-ink readers and a PDF, ready for Amazon’s self-publishing service. The difference is that the right version of R, TeXLive and Quarto get installed using dedicated actions, and the R packages get installed using {renv}. The underlying operating system is ubuntu-22.04 instead of ubuntu-latest. This is to ensure that the underlying system dependencies stay stable, but it also means that you will need to update this operating system once version 22.04 of Ubuntu is deprecated (in 2027) which could cause the R version and packages that you need not to be installable anymore. This is a lot of moving pieces, and if one of them fails, nothing will work anymore. You also notice this if you pay attention at the number of lines of code of the workflow files of both repositories: if you compare the Github workflow file from the template that uses actions to install the right software and {renv} to the one from this template you’ll notice that the one from this template is much shorter as well.\nThe only dependency is Nix itself, and Nix is not going anywhere, as it’s been around for 20 years. The Determinate System actions are optional; so even if for some reason those fail in the future, they’re not needed. It’s just that using them makes things easier.\nIf you use this template, or have any questions, please let me know by opening an issue.",
     "crumbs": [
-      "Welcome to pharmacoepidemiology"
-    ]
-  },
-  {
-    "objectID": "nix_nixpkgs.html#measures-of-frequency",
-    "href": "nix_nixpkgs.html#measures-of-frequency",
-    "title": "1  Measures in Epidemiology",
-    "section": "",
-    "text": "1.1.1 Prevalence\ndddd\n\n\n1.1.2 Incidence\nThe question that remains unanswered though, is why use the Nix package manager to install all this software instead of using the usual ways of first installing R, and then using install.packages() to install any required packages?\n\\(\\text{Incidence rate per 1,000} =\\)\n\\(\\frac{\n\\begin{aligned}\n    \\text{Number of new cases of a disease} \\\\\n    \\text{occurring in a population during a} \\\\\n    \\text{specified period of time}\n\\end{aligned}\n}{\n\\begin{aligned}\n    \\text{Total person-time (sum of the} \\\\\n    \\text{time periods of observation of each} \\\\\n    \\text{person who has been observed for all or} \\\\\n    \\text{part of the entire time period)}\n\\end{aligned}\n} \\times 1,000\\)\nKey Differences Between Cumulative Incidence and Incidence Rate\n\n\n\n\n\n\n\n\nAspect\nCumulative Incidence\nIncidence Rate\n\n\n\n\nMeasure\nProportion or risk\nRate\n\n\nFormula\n()\n()\n\n\nUnit\nNo units (proportion)\nUnits of time (e.g., per person-year)\n\n\nAssumptions\nAssumes all individuals are followed for the same period\nAccounts for varying follow-up times\n\n\nInterpretation\nProbability of developing disease over a period\nSpeed at which new cases occur\n\n\nBest for\nShort-term studies with stable populations\nLong-term studies with varying follow-up times\n\n\nPopulation at risk\nEntire population at the start of the period\nVaries as it accounts for person-time",
-    "crumbs": [
-      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Measures in Epidemiology</span>"
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Conclusion</span>"
     ]
   },
   {
