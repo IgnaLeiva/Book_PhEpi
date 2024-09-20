@@ -8,5 +8,5 @@ It may seem like a lot of work, but for future lectures this will make things ea
 [Pharmacoepidemiology Course](https://pharmacoepidemiology-ukhd.github.io/Book_PhEpi)
 
 Best, Ignacio
-
+btw, the content is not precise because it still has part of the template.
 
