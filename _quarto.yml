@@ -16,7 +16,7 @@ book:
     logo: logo.png
   chapters:
     - index.qmd
-    - nix_nixpkgs.qmd
+    - measures_in_epidemiology.qmd
     - nix_actions.qmd
     - conclusion.qmd
     - shiny.qmd
