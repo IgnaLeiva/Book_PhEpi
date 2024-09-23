@@ -48,7 +48,10 @@ $\frac{
 
 
 
+## see this
 
+Relative risk versus absolute risk: one cannot be interpreted
+without the other
 
 ## Ensuring reproducibility with Nix
 
